@@ -5,8 +5,19 @@
 
 	<ul>
 		#foreach ($nav_item in $nav_items)
+			#set($nav_css_class = "")
 			#if ($nav_item.isSelected())
-				<li class="selected">
+				#set($nav_css_class = $nav_css_class + "selected ")
+			#end
+			#if ($velocityCount == 1)
+				#set($nav_css_class = $nav_css_class + "first ")
+			#end
+			#if (!$velocityHasNext)
+				#set($nav_css_class = $nav_css_class + "last ")
+			#end
+			
+			#if($nav_css_class)
+				<li class="$nav_css_class">
 			#else
 				<li>
 			#end

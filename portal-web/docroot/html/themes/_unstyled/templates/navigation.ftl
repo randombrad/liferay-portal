@@ -5,8 +5,18 @@
 
 	<ul>
 		<#list nav_items as nav_item>
+			<#assign nav_css_class = "">
 			<#if nav_item.isSelected()>
-				<li class="selected">
+				<#assign nav_css_class = nav_css_class + "selected ">
+			</#if>
+			<#if nav_item_index == 0>
+				<#assign nav_css_class = nav_css_class + "first ">
+			</#if>
+			<#if !nav_item_has_next>
+				<#assign nav_css_class = nav_css_class + "last ">
+			</#if>
+			<#if nav_css_class != "">
+				<li class="nav_css_class">
 			<#else>
 				<li>
 			</#if>
