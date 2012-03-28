@@ -65,7 +65,7 @@ body.orange, .orange .portlet {
 
 		&, a {
 			color: #FFF;
-		}	
+		}
 	}
 
 	.aui-textboxlistentry {
@@ -134,8 +134,8 @@ body.orange, .orange .portlet {
 	.aui-menu-content li a, .lfr-menu-list ul li a {
 		color: #34322C;
 	}
-	
-	.aui-menu-content li a.aui-focus, .lfr-menu-list ul a.aui-focus, .lfr-menu-expanded li a:focus  {
+
+	.aui-menu-content li a.aui-focus, .lfr-menu-list ul a.aui-focus, .lfr-menu-expanded li a:focus {
 		background-color: #7D745B;
 		color: #FFF;
 		text-shadow: -1px -1px #34322C;
@@ -240,7 +240,7 @@ body.orange, .orange .portlet {
 				border-color: #968A83;
 				color: #5F9930;
 			}
-		}		
+		}
 	}
 
 	/* ---------- Miscellaneous portlet styles ---------- */

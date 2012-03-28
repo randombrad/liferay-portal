@@ -56,6 +56,10 @@ body.green, .green .portlet {
 		border-color: #909683;
 	}
 
+	.aui-sortable-proxy {
+		background-color: #7C8272;
+	}
+
 	.aui-tab {
 		background: none;
 	}
@@ -80,10 +84,6 @@ body.green, .green .portlet {
 	.aui-textboxlistentry-focused {
 		background-color: #57B63C;
 		border-color: #404F34;
-	}
-
-	.aui-sortable-proxy {
-		background-color: #7C8272;
 	}
 
 	.dockbar {
@@ -135,7 +135,7 @@ body.green, .green .portlet {
 		}
 	}
 
-	.aui-menu-content li a.aui-focus, .lfr-menu-list ul a.aui-focus, .lfr-menu-expanded li a:focus  {
+	.aui-menu-content li a.aui-focus, .lfr-menu-list ul a.aui-focus, .lfr-menu-expanded li a:focus {
 		background-color: #677D5B;
 		color: #FFF;
 		text-shadow: -1px -1px #2F342C;
@@ -151,7 +151,7 @@ body.green, .green .portlet {
 			border-color: #B9BDAF;
 		}
 
-		.theme-entry .theme-title  {
+		.theme-entry .theme-title {
 			background-color: #909488;
 			border-color: #909683;
 		}

@@ -114,8 +114,8 @@ select {
 
 .display-panel-columns{
 	&:after {
-		margin-left: 1px;
 		border-right: 1px solid #FFF;
+		margin-left: 1px;
 	}
 
 	&:before {
@@ -124,10 +124,10 @@ select {
 	}
 
 	&:after, &:before {
-		position: fixed;
+		bottom: 0;
 		content: '';
 		display: block;
-		bottom: 0;
+		position: fixed;
 		top: 0;
 		width: 238px;
 		z-index: -1;
@@ -326,7 +326,7 @@ select {
 			.lfr-panel-titlebar {
 				background: transparent none;
 				padding: 0 3px 0 5px;
-				
+
 				&, .lfr-panel-button {
 					background: url(../images/custom/panel_header_toggler_bg.png) no-repeat -3px -1px;
 					margin: 2px 0 0;
@@ -431,9 +431,9 @@ select {
 						border-color: transparent #EEF0F2 transparent transparent;
 						content: "";
 						display: block;
+						margin-top: -8px;
 						position: absolute;
 						right: -2px;
-						margin-top: -8px;
 						top: 50%;
 						z-index: 2;
 					}
@@ -581,8 +581,8 @@ select {
 }
 
 #quick-links {
-	padding: 10px;
 	min-height: 20px;
+	padding: 10px;
 }
 
 .search-panels {
@@ -651,7 +651,7 @@ select {
 				background-color: #76AD00;
 			}
 		}
-	
+
 		#panel-manage-content li {
 			a:focus, &.selected-portlet a {
 				background-color: #005BA8;
@@ -682,8 +682,8 @@ select {
 		}
 
 		.lfr-panel.lfr-extended .lfr-panel-content ul {
-			padding: 0;
 			border: 0;
+			padding: 0;
 		}
 
 		#panel-manage-content li a {
