@@ -85,7 +85,7 @@ if (selUser != null) {
 				for (LayoutSetPrototype layoutSetPrototype : layoutSetPrototypes) {
 				%>
 
-					<aui:option label="<%= layoutSetPrototype.getName(user.getLanguageId()) %>" value="<%= layoutSetPrototype.getLayoutSetPrototypeId() %>" />
+					<aui:option label="<%= HtmlUtil.escape(layoutSetPrototype.getName(user.getLanguageId())) %>" value="<%= layoutSetPrototype.getLayoutSetPrototypeId() %>" />
 
 				<%
 				}
@@ -108,7 +108,7 @@ if (selUser != null) {
 			<aui:field-wrapper label="public-pages">
 				<c:choose>
 					<c:when test="<%= selUser != null %>">
-						<liferay-portlet:actionURL var="publicPagesURL" portletName="<%= PortletKeys.SITE_REDIRECTOR %>">
+						<liferay-portlet:actionURL portletName="<%= PortletKeys.SITE_REDIRECTOR %>" var="publicPagesURL">
 							<portlet:param name="struts_action" value="/my_sites/view" />
 							<portlet:param name="groupId" value="<%= String.valueOf(selUser.getGroup().getGroupId()) %>" />
 							<portlet:param name="privateLayout" value="<%= Boolean.FALSE.toString() %>" />
@@ -132,10 +132,10 @@ if (selUser != null) {
 
 						<c:choose>
 							<c:when test="<%= (publicLayoutSetPrototype != null) && hasUnlinkLayoutSetPrototypePermission %>">
-								<aui:input label='<%= LanguageUtil.format(pageContext, "enable-propagation-of-changes-from-the-site-template-x", publicLayoutSetPrototype.getName(user.getLanguageId())) %>' name="publicLayoutSetPrototypeLinkEnabled" type="checkbox" value="<%= publicLayoutSetPrototypeLinkEnabled %>" />
+								<aui:input label='<%= LanguageUtil.format(pageContext, "enable-propagation-of-changes-from-the-site-template-x", HtmlUtil.escape(publicLayoutSetPrototype.getName(user.getLanguageId()))) %>' name="publicLayoutSetPrototypeLinkEnabled" type="checkbox" value="<%= publicLayoutSetPrototypeLinkEnabled %>" />
 							</c:when>
 							<c:when test="<%= publicLayoutSetPrototype != null %>">
-								<liferay-ui:message arguments="<%= new Object[] {privateLayoutSetPrototype.getName(locale)} %>" key="these-pages-are-linked-to-site-template-x" />
+								<liferay-ui:message arguments="<%= new Object[] {HtmlUtil.escape(privateLayoutSetPrototype.getName(locale))} %>" key="these-pages-are-linked-to-site-template-x" />
 
 								<aui:input name="layoutSetPrototypeLinkEnabled" type="hidden" value="<%= true %>" />
 							</c:when>
@@ -155,7 +155,7 @@ if (selUser != null) {
 				for (LayoutSetPrototype layoutSetPrototype : layoutSetPrototypes) {
 				%>
 
-					<aui:option label="<%= layoutSetPrototype.getName(user.getLanguageId()) %>" value="<%= layoutSetPrototype.getLayoutSetPrototypeId() %>" />
+					<aui:option label="<%= HtmlUtil.escape(layoutSetPrototype.getName(user.getLanguageId())) %>" value="<%= layoutSetPrototype.getLayoutSetPrototypeId() %>" />
 
 				<%
 				}
@@ -178,7 +178,7 @@ if (selUser != null) {
 			<aui:field-wrapper label="private-pages">
 				<c:choose>
 					<c:when test="<%= selUser != null %>">
-						<liferay-portlet:actionURL var="privatePagesURL" portletName="<%= PortletKeys.SITE_REDIRECTOR %>">
+						<liferay-portlet:actionURL portletName="<%= PortletKeys.SITE_REDIRECTOR %>" var="privatePagesURL">
 							<portlet:param name="struts_action" value="/my_sites/view" />
 							<portlet:param name="groupId" value="<%= String.valueOf(selUser.getGroup().getGroupId()) %>" />
 							<portlet:param name="privateLayout" value="<%= Boolean.TRUE.toString() %>" />
@@ -202,10 +202,10 @@ if (selUser != null) {
 
 						<c:choose>
 							<c:when test="<%= (privateLayoutSetPrototype != null) && hasUnlinkLayoutSetPrototypePermission %>">
-								<aui:input label='<%= LanguageUtil.format(pageContext, "enable-propagation-of-changes-from-the-site-template-x", privateLayoutSetPrototype.getName(user.getLanguageId())) %>' name="privateLayoutSetPrototypeLinkEnabled" type="checkbox" value="<%= privateLayoutSetPrototypeLinkEnabled %>" />
+								<aui:input label='<%= LanguageUtil.format(pageContext, "enable-propagation-of-changes-from-the-site-template-x", HtmlUtil.escape(privateLayoutSetPrototype.getName(user.getLanguageId()))) %>' name="privateLayoutSetPrototypeLinkEnabled" type="checkbox" value="<%= privateLayoutSetPrototypeLinkEnabled %>" />
 							</c:when>
 							<c:when test="<%= privateLayoutSetPrototype != null %>">
-								<liferay-ui:message arguments="<%= new Object[] {privateLayoutSetPrototype.getName(locale)} %>" key="these-pages-are-linked-to-site-template-x" />
+								<liferay-ui:message arguments="<%= new Object[] {HtmlUtil.escape(privateLayoutSetPrototype.getName(locale))} %>" key="these-pages-are-linked-to-site-template-x" />
 
 								<aui:input name="layoutSetPrototypeLinkEnabled" type="hidden" value="<%= true %>" />
 							</c:when>

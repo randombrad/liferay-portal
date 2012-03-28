@@ -145,7 +145,7 @@ public class ShoppingUtil {
 		// alternative shipping and shipping price is greater than 0
 
 		if ((preferences != null) &&
-			(preferences.useAlternativeShipping()) && (shipping > 0)) {
+			preferences.useAlternativeShipping() && (shipping > 0)) {
 
 			double altShippingDelta = 0.0;
 
@@ -216,10 +216,9 @@ public class ShoppingUtil {
 				ShoppingItem item = cartItem.getItem();
 
 				if (((categoryIdsSet.size() > 0) &&
-					 (categoryIdsSet.contains(
-						String.valueOf(item.getCategoryId())))) ||
-					((skusSet.size() > 0) &&
-					 (skusSet.contains(item.getSku())))) {
+					 categoryIdsSet.contains(
+						 String.valueOf(item.getCategoryId()))) ||
+					((skusSet.size() > 0) && skusSet.contains(item.getSku()))) {
 
 					newItems.put(cartItem, count);
 				}
@@ -502,7 +501,7 @@ public class ShoppingUtil {
 		}
 
 		if ((preferences != null) &&
-			(preferences.getTaxState().equals(stateId))) {
+			preferences.getTaxState().equals(stateId)) {
 
 			double subtotal = 0.0;
 
@@ -960,13 +959,13 @@ public class ShoppingUtil {
 
 	public static String getPpPaymentStatus(String ppPaymentStatus) {
 		if ((ppPaymentStatus == null) || (ppPaymentStatus.length() < 2) ||
-			(ppPaymentStatus.equals("checkout"))) {
+			ppPaymentStatus.equals("checkout")) {
 
 			return ShoppingOrderConstants.STATUS_CHECKOUT;
 		}
 		else {
 			return Character.toUpperCase(ppPaymentStatus.charAt(0)) +
-				ppPaymentStatus.substring(1, ppPaymentStatus.length());
+				ppPaymentStatus.substring(1);
 		}
 	}
 
@@ -1060,8 +1059,8 @@ public class ShoppingUtil {
 			int minQty = temp.getMinQuantity();
 			int maxQty = temp.getMaxQuantity();
 
-			if ((temp.getStatus() !=
-					ShoppingItemPriceConstants.STATUS_INACTIVE)) {
+			if (temp.getStatus() !=
+					ShoppingItemPriceConstants.STATUS_INACTIVE) {
 
 				if ((count >= minQty) && ((count <= maxQty) || (maxQty == 0))) {
 					return temp;

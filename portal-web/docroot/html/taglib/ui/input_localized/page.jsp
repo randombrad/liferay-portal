@@ -27,6 +27,7 @@ Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribut
 String formName = (String)request.getAttribute("liferay-ui:input-localized:formName");
 boolean ignoreRequestValue = GetterUtil.getBoolean((String) request.getAttribute("liferay-ui:input-localized:ignoreRequestValue"));
 String languageId = (String)request.getAttribute("liferay-ui:input-localized:languageId");
+String maxLength = GetterUtil.getString((String)request.getAttribute("liferay-ui:input-localized:maxLength"));
 String name = (String)request.getAttribute("liferay-ui:input-localized:name");
 String xml = (String)request.getAttribute("liferay-ui:input-localized:xml");
 String type = (String)request.getAttribute("liferay-ui:input-localized:type");
@@ -70,6 +71,17 @@ if (Validator.isNull(mainLanguageValue)) {
 		</c:when>
 	</c:choose>
 
+	<c:if test="<%= Validator.isNotNull(maxLength) %>">
+		<aui:script use="aui-char-counter">
+			new A.CharCounter(
+				{
+					input: '#<portlet:namespace /><%= id + StringPool.UNDERLINE + mainLanguageId %>',
+					maxLength: <%= maxLength %>
+				}
+			);
+		</aui:script>
+	</c:if>
+
 	<c:if test="<%= Validator.isNull(languageId) %>">
 		<span class="flag-selector nobr">
 			<img alt="<%= defaultLocale.getDisplayName() %>" class="default-language" src="<%= themeDisplay.getPathThemeImages() %>/language/<%= mainLanguageId %>.png" />
@@ -86,7 +98,7 @@ if (Validator.isNull(mainLanguageValue)) {
 					String selLanguageId = LocaleUtil.toLanguageId(locales[i]);
 					String languageValue = LocalizationUtil.getLocalization(xml, selLanguageId, false);
 
-					if (Validator.isNotNull(languageValue) || ((!ignoreRequestValue) && (request.getParameter(name + StringPool.UNDERLINE + selLanguageId) != null))) {
+					if (Validator.isNotNull(languageValue) || (!ignoreRequestValue && (request.getParameter(name + StringPool.UNDERLINE + selLanguageId) != null))) {
 						languageIds.add(selLanguageId);
 					}
 				}
@@ -135,7 +147,7 @@ if (Validator.isNull(mainLanguageValue)) {
 										String selLanguageId = LocaleUtil.toLanguageId(curLocale);
 										String languageValue = LocalizationUtil.getLocalization(xml, selLanguageId, false);
 
-										if ((Validator.isNotNull(xml)) && Validator.isNotNull(languageValue)) {
+										if (Validator.isNotNull(xml) && Validator.isNotNull(languageValue)) {
 											optionStyle = "style=\"font-weight: bold\"";
 										}
 									%>
@@ -168,6 +180,17 @@ if (Validator.isNull(mainLanguageValue)) {
 										<textarea class="language-value" <%= disabled ? "disabled=\"disabled\"" : "" %> id="<portlet:namespace /><%= id + StringPool.UNDERLINE + curLanguageId %>" name="<portlet:namespace /><%= name + StringPool.UNDERLINE + curLanguageId %>"><%= HtmlUtil.escape(languageValue) %></textarea>
 									</c:when>
 								</c:choose>
+
+								<c:if test="<%= Validator.isNotNull(maxLength) %>">
+									<aui:script use="aui-char-counter">
+										new A.CharCounter(
+											{
+												input: '#<portlet:namespace /><%= id + StringPool.UNDERLINE + curLanguageId %>',
+												maxLength: <%= maxLength %>
+											}
+										);
+									</aui:script>
+								</c:if>
 							</div>
 						</div>
 

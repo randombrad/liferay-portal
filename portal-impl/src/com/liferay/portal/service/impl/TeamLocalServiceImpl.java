@@ -80,16 +80,16 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 	}
 
 	@Override
-	public void deleteTeam(long teamId)
+	public Team deleteTeam(long teamId)
 		throws PortalException, SystemException {
 
 		Team team = teamPersistence.findByPrimaryKey(teamId);
 
-		deleteTeam(team);
+		return deleteTeam(team);
 	}
 
 	@Override
-	public void deleteTeam(Team team)
+	public Team deleteTeam(Team team)
 		throws PortalException, SystemException {
 
 		// Team
@@ -107,6 +107,8 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 		Role role = team.getRole();
 
 		roleLocalService.deleteRole(role);
+
+		return team;
 	}
 
 	public void deleteTeams(long groupId)
@@ -121,13 +123,6 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 
 	public List<Team> getGroupTeams(long groupId) throws SystemException {
 		return teamPersistence.findByGroupId(groupId);
-	}
-
-	@Override
-	public Team getTeam(long teamId)
-		throws PortalException, SystemException {
-
-		return teamPersistence.findByPrimaryKey(teamId);
 	}
 
 	public Team getTeam(long groupId, String name)
@@ -198,7 +193,7 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 	protected void validate(long teamId, long groupId, String name)
 		throws PortalException, SystemException {
 
-		if ((Validator.isNull(name)) || (Validator.isNumber(name)) ||
+		if (Validator.isNull(name) || Validator.isNumber(name) ||
 			(name.indexOf(CharPool.COMMA) != -1) ||
 			(name.indexOf(CharPool.STAR) != -1)) {
 

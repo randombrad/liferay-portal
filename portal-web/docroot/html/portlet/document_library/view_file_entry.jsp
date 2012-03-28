@@ -272,7 +272,14 @@ request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 						}
 
 						if (Validator.isNotNull(previewQueryString)) {
-							if (hasVideo) {
+							if (hasAudio) {
+								previewFileURLs = new String[PropsValues.DL_FILE_ENTRY_PREVIEW_AUDIO_CONTAINERS.length];
+
+								for (int i = 0; i < PropsValues.DL_FILE_ENTRY_PREVIEW_AUDIO_CONTAINERS.length; i++) {
+									previewFileURLs[i] = DLUtil.getPreviewURL(fileEntry, fileVersion, themeDisplay, previewQueryString + "&type=" + PropsValues.DL_FILE_ENTRY_PREVIEW_AUDIO_CONTAINERS[i]);
+								}
+							}
+							else if (hasVideo) {
 								if (PropsValues.DL_FILE_ENTRY_PREVIEW_VIDEO_CONTAINERS.length > 0) {
 									previewFileURLs = new String[PropsValues.DL_FILE_ENTRY_PREVIEW_VIDEO_CONTAINERS.length];
 
@@ -316,7 +323,36 @@ request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 							</c:when>
 							<c:otherwise>
 								<c:choose>
-									<c:when test ="<%= !hasImages && !hasAudio && !hasVideo %>">
+									<c:when test="<%= hasAudio %>">
+										<div class="lfr-preview-audio" id="<portlet:namespace />previewFile">
+											<div class="lfr-preview-audio-content" id="<portlet:namespace />previewFileContent"></div>
+										</div>
+
+										<liferay-util:include page="/html/portlet/document_library/player.jsp" />
+									</c:when>
+									<c:when test="<%= hasImages %>">
+										<div class="lfr-preview-file lfr-preview-image" id="<portlet:namespace />previewFile">
+											<div class="lfr-preview-file-content lfr-preview-image-content" id="<portlet:namespace />previewFileContent">
+												<div class="lfr-preview-file-image-current-column">
+													<div class="lfr-preview-file-image-container">
+														<img class="lfr-preview-file-image-current" src="<%= previewFileURL %>" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</c:when>
+									<c:when test="<%= hasVideo %>">
+										<div class="lfr-preview-file lfr-preview-video" id="<portlet:namespace />previewFile">
+											<div class="lfr-preview-file-content lfr-preview-video-content">
+												<div class="lfr-preview-file-video-current-column">
+													<div id="<portlet:namespace />previewFileContent"></div>
+												</div>
+											</div>
+										</div>
+
+										<liferay-util:include page="/html/portlet/document_library/player.jsp" />
+									</c:when>
+									<c:otherwise>
 										<div class="lfr-preview-file" id="<portlet:namespace />previewFile">
 											<div class="lfr-preview-file-content" id="<portlet:namespace />previewFileContent">
 												<div class="lfr-preview-file-image-current-column">
@@ -353,29 +389,7 @@ request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 												}
 											).render();
 										</aui:script>
-									</c:when>
-									<c:when test="<%= hasImages %>">
-										<div class="lfr-preview-file lfr-preview-image" id="<portlet:namespace />previewFile">
-											<div class="lfr-preview-file-content lfr-preview-image-content" id="<portlet:namespace />previewFileContent">
-												<div class="lfr-preview-file-image-current-column">
-													<div class="lfr-preview-file-image-container">
-														<img class="lfr-preview-file-image-current" src="<%= previewFileURL %>" />
-													</div>
-												</div>
-											</div>
-										</div>
-									</c:when>
-									<c:when test="<%= hasAudio || hasVideo %>">
-										<div class="lfr-preview-file lfr-preview-video" id="<portlet:namespace />previewFile">
-											<div class="lfr-preview-file-content lfr-preview-video-content">
-												<div class="lfr-preview-file-video-current-column">
-													<div id="<portlet:namespace />previewFileContent"></div>
-												</div>
-											</div>
-										</div>
-
-										<liferay-util:include page="/html/portlet/document_library/player.jsp" />
-									</c:when>
+									</c:otherwise>
 								</c:choose>
 							</c:otherwise>
 						</c:choose>
@@ -383,7 +397,7 @@ request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 				</c:if>
 
 				<c:if test="<%= PropsValues.DL_FILE_ENTRY_COMMENTS_ENABLED %>">
-					<liferay-ui:panel cssClass="lfr-document-library-comments" collapsible="<%= true %>" extended="<%= true %>" persistState="<%= true %>" title="comments">
+					<liferay-ui:panel collapsible="<%= true %>" cssClass="lfr-document-library-comments" extended="<%= true %>" persistState="<%= true %>" title="comments">
 						<portlet:actionURL var="discussionURL">
 							<portlet:param name="struts_action" value="/document_library/edit_file_entry_discussion" />
 						</portlet:actionURL>
@@ -688,7 +702,7 @@ request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 							}
 							%>
 
-							<liferay-ui:search-iterator searchContainer="<%= searchContainer %>" paginate="<%= false %>" />
+							<liferay-ui:search-iterator paginate="<%= false %>" searchContainer="<%= searchContainer %>" />
 						</liferay-ui:panel>
 					</liferay-ui:panel-container>
 				</div>

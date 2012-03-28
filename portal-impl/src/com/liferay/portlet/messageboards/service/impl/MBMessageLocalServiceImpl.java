@@ -94,7 +94,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.portlet.PortletPreferences;
@@ -186,7 +185,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 				classNameId, classPK);
 
 			if (discussion == null) {
-				discussion = mbDiscussionLocalService.addDiscussion(
+				mbDiscussionLocalService.addDiscussion(
 					classNameId, classPK, message.getThreadId());
 			}
 		}
@@ -613,6 +612,17 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 					mbMessagePersistence.update(childMessage, false);
 
+					List<MBMessage> repliesMessages =
+						mbMessagePersistence.findByThreadReplies(
+							message.getThreadId());
+
+					for (MBMessage repliesMessage : repliesMessages) {
+						repliesMessage.setRootMessageId(
+							childMessage.getMessageId());
+
+						mbMessagePersistence.update(repliesMessage, false);
+					}
+
 					thread.setRootMessageId(childMessage.getMessageId());
 					thread.setRootMessageUserId(childMessage.getUserId());
 
@@ -630,11 +640,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 				// Message has children messages
 
 				if (!childrenMessages.isEmpty()) {
-					Iterator<MBMessage> itr = childrenMessages.iterator();
-
-					while (itr.hasNext()) {
-						MBMessage childMessage = itr.next();
-
+					for (MBMessage childMessage : childrenMessages) {
 						childMessage.setParentMessageId(
 							message.getParentMessageId());
 
@@ -1370,8 +1376,8 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 			message.setPriority(priority);
 		}
 
-		if ((serviceContext.getWorkflowAction() ==
-				WorkflowConstants.ACTION_SAVE_DRAFT)) {
+		if (serviceContext.getWorkflowAction() ==
+				WorkflowConstants.ACTION_SAVE_DRAFT) {
 
 			if (message.isDraft() || message.isPending()) {
 			}
@@ -1399,7 +1405,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 			String[] fileNames = DLStoreUtil.getFileNames(
 				companyId, repositoryId, dirName);
 
-			for (String fileName: fileNames) {
+			for (String fileName : fileNames) {
 				if (!existingFiles.contains(fileName)) {
 					DLStoreUtil.deleteFile(companyId, repositoryId, fileName);
 				}
@@ -1815,8 +1821,9 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 		subscriptionSender.setBody(body);
 		subscriptionSender.setCompanyId(message.getCompanyId());
+		subscriptionSender.setContextAttribute(
+			"[$COMMENTS_BODY$]", message.getBody(true), false);
 		subscriptionSender.setContextAttributes(
-			"[$COMMENTS_BODY$]", message.getBody(true),
 			"[$COMMENTS_USER_ADDRESS$]", userAddress, "[$COMMENTS_USER_NAME$]",
 			userName, "[$CONTENT_URL$]", contentURL);
 		subscriptionSender.setFrom(fromAddress, fromName);
@@ -1956,10 +1963,12 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 			signature = MBUtil.getEmailMessageAddedSignature(preferences);
 		}
 
-		String subject = message.getSubject();
-
 		if (!subjectPrefix.contains("[$MESSAGE_SUBJECT$]")) {
-			subject = subjectPrefix.trim() + " " + subject.trim();
+			String subject = message.getSubject();
+
+			subject = subjectPrefix.trim() + StringPool.SPACE + subject.trim();
+
+			message.setSubject(subject);
 		}
 
 		if (Validator.isNotNull(signature)) {

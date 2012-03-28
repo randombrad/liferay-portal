@@ -41,7 +41,6 @@ import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ServerDetector;
@@ -524,9 +523,8 @@ public class LayoutAction extends Action {
 					Map<String, String[]> renderParameterMap =
 						new HashMap<String, String[]>();
 
-					MapUtil.copy(
-						eventResponseImpl.getRenderParameterMap(),
-						renderParameterMap);
+					renderParameterMap.putAll(
+						eventResponseImpl.getRenderParameterMap());
 
 					RenderParametersPool.put(
 						request, layout.getPlid(), portletId,
@@ -806,8 +804,7 @@ public class LayoutAction extends Action {
 
 			try {
 				if ((contentType != null) &&
-					(contentType.startsWith(
-						ContentTypes.MULTIPART_FORM_DATA))) {
+					contentType.startsWith(ContentTypes.MULTIPART_FORM_DATA)) {
 
 					PortletConfigImpl invokerPortletConfigImpl =
 						(PortletConfigImpl)invokerPortlet.getPortletConfig();

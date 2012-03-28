@@ -67,10 +67,12 @@ public interface DLSyncLocalService extends PersistedModelLocalService {
 	* Deletes the d l sync with the primary key from the database. Also notifies the appropriate model listeners.
 	*
 	* @param syncId the primary key of the d l sync
+	* @return the d l sync that was removed
 	* @throws PortalException if a d l sync with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
-	public void deleteDLSync(long syncId)
+	public com.liferay.portlet.documentlibrary.model.DLSync deleteDLSync(
+		long syncId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
@@ -78,9 +80,10 @@ public interface DLSyncLocalService extends PersistedModelLocalService {
 	* Deletes the d l sync from the database. Also notifies the appropriate model listeners.
 	*
 	* @param dlSync the d l sync
+	* @return the d l sync that was removed
 	* @throws SystemException if a system exception occurred
 	*/
-	public void deleteDLSync(
+	public com.liferay.portlet.documentlibrary.model.DLSync deleteDLSync(
 		com.liferay.portlet.documentlibrary.model.DLSync dlSync)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
@@ -242,14 +245,16 @@ public interface DLSyncLocalService extends PersistedModelLocalService {
 		long fileId, java.lang.String fileUuid, long companyId,
 		long repositoryId, long parentFolderId, java.lang.String name,
 		java.lang.String type, java.lang.String version)
-		throws com.liferay.portal.kernel.exception.SystemException;
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
 
 	public com.liferay.portlet.documentlibrary.model.DLSync addSync(
 		long fileId, java.lang.String fileUuid, long companyId,
 		long repositoryId, long parentFolderId, java.lang.String name,
 		java.lang.String description, java.lang.String type,
 		java.lang.String version)
-		throws com.liferay.portal.kernel.exception.SystemException;
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
 
 	/**
 	* @deprecated {@link #updateSync(long, long, String, String, String,

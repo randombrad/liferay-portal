@@ -74,7 +74,7 @@ public class PortalPreferencesImpl
 		if ((getCompanyId() == portalPreferences.getCompanyId()) &&
 			(getOwnerId() == portalPreferences.getOwnerId()) &&
 			(getOwnerType() == portalPreferences.getOwnerType()) &&
-			(getMap().equals(portalPreferences.getMap()))) {
+			getPreferences().equals(portalPreferences.getPreferences())) {
 
 			return true;
 		}
@@ -128,9 +128,12 @@ public class PortalPreferencesImpl
 			throw new ReadOnlyException(key);
 		}
 
-		Map<String, Preference> modifiedPreferences = getModifiedPreferences();
+		Map<String, Preference> modifiedPreferences = getModifiedPreferences(
+			false);
 
-		modifiedPreferences.remove(key);
+		if (modifiedPreferences != null) {
+			modifiedPreferences.remove(key);
+		}
 	}
 
 	public void resetValues(String namespace) {
@@ -157,7 +160,7 @@ public class PortalPreferencesImpl
 	}
 
 	public void setValue(String namespace, String key, String value) {
-		if (Validator.isNull(key) || (key.equals(_RANDOM_KEY))) {
+		if (Validator.isNull(key) || key.equals(_RANDOM_KEY)) {
 			return;
 		}
 
@@ -181,7 +184,7 @@ public class PortalPreferencesImpl
 	}
 
 	public void setValues(String namespace, String key, String[] values) {
-		if (Validator.isNull(key) || (key.equals(_RANDOM_KEY))) {
+		if (Validator.isNull(key) || key.equals(_RANDOM_KEY)) {
 			return;
 		}
 
@@ -220,7 +223,7 @@ public class PortalPreferencesImpl
 			return key;
 		}
 		else {
-			return namespace + StringPool.POUND + key;
+			return namespace.concat(StringPool.POUND).concat(key);
 		}
 	}
 

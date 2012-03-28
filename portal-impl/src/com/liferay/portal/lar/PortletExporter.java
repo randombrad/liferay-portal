@@ -333,15 +333,23 @@ public class PortletExporter {
 			PortletDataContext portletDataContext, Element rootElement)
 		throws Exception {
 
+		Element assetsElement = rootElement.element("assets");
+
+		if (assetsElement == null) {
+			assetsElement = rootElement.addElement("assets");
+		}
+
+		Element assetCategoriesElement = rootElement.element("categories");
+
+		if (assetCategoriesElement == null) {
+			assetCategoriesElement = rootElement.addElement("categories");
+		}
+
 		Element assetVocabulariesElement = rootElement.element("vocabularies");
 
 		if (assetVocabulariesElement == null) {
 			assetVocabulariesElement = rootElement.addElement("vocabularies");
 		}
-
-		Element assetsElement = rootElement.addElement("assets");
-
-		Element assetCategoriesElement = rootElement.addElement("categories");
 
 		Map<String, String[]> assetCategoryUuidsMap =
 			portletDataContext.getAssetCategoryUuidsMap();
@@ -400,6 +408,13 @@ public class PortletExporter {
 
 		Element assetCategoryElement = assetCategoriesElement.addElement(
 			"category");
+
+		Group companyGroup = GroupLocalServiceUtil.getCompanyGroup(
+			assetCategory.getCompanyId());
+
+		if (assetCategory.getGroupId() == companyGroup.getGroupId()) {
+			assetCategoryElement.addAttribute("global", "true");
+		}
 
 		assetCategoryElement.addAttribute("path", path);
 
@@ -560,6 +575,13 @@ public class PortletExporter {
 		Element assetVocabularyElement = assetVocabulariesElement.addElement(
 			"vocabulary");
 
+		Group companyGroup = GroupLocalServiceUtil.getCompanyGroup(
+			assetVocabulary.getCompanyId());
+
+		if (assetVocabulary.getGroupId() == companyGroup.getGroupId()) {
+			assetVocabularyElement.addAttribute("global", "true");
+		}
+
 		assetVocabularyElement.addAttribute("path", path);
 
 		assetVocabulary.setUserUuid(assetVocabulary.getUserUuid());
@@ -649,7 +671,7 @@ public class PortletExporter {
 
 			List<ExpandoColumn> expandoColumns = entry.getValue();
 
-			for (ExpandoColumn expandoColumn: expandoColumns) {
+			for (ExpandoColumn expandoColumn : expandoColumns) {
 				Element expandoColumnElement = expandoTableElement.addElement(
 					"expando-column");
 
