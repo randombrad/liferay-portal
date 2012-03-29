@@ -177,21 +177,18 @@ public class OrganizationLocalServiceImpl
 			userId, Organization.class.getName(), organizationId, name, null,
 			GroupConstants.TYPE_SITE_PRIVATE, null, site, true, null);
 
-		if (PropsValues.ORGANIZATIONS_ASSIGNMENT_AUTO) {
+		// Role
 
-			// Role
+		Role role = roleLocalService.getRole(
+			organization.getCompanyId(), RoleConstants.ORGANIZATION_OWNER);
 
-			Role role = roleLocalService.getRole(
-				organization.getCompanyId(), RoleConstants.ORGANIZATION_OWNER);
+		userGroupRoleLocalService.addUserGroupRoles(
+			userId, group.getGroupId(), new long[] {role.getRoleId()});
 
-			userGroupRoleLocalService.addUserGroupRoles(
-				userId, group.getGroupId(), new long[] {role.getRoleId()});
+		// User
 
-			// User
-
-			userLocalService.addOrganizationUsers(
-				organizationId, new long[] {userId});
-		}
+		userLocalService.addOrganizationUsers(
+			organizationId, new long[] {userId});
 
 		// Resources
 
@@ -318,13 +315,13 @@ public class OrganizationLocalServiceImpl
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public void deleteOrganization(long organizationId)
+	public Organization deleteOrganization(long organizationId)
 		throws PortalException, SystemException {
 
 		Organization organization = organizationPersistence.findByPrimaryKey(
 			organizationId);
 
-		deleteOrganization(organization);
+		return deleteOrganization(organization);
 	}
 
 	/**
@@ -337,7 +334,7 @@ public class OrganizationLocalServiceImpl
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public void deleteOrganization(Organization organization)
+	public Organization deleteOrganization(Organization organization)
 		throws PortalException, SystemException {
 
 		if ((userLocalService.getOrganizationUsersCount(
@@ -418,12 +415,7 @@ public class OrganizationLocalServiceImpl
 
 		PermissionCacheUtil.clearCache();
 
-		// Indexer
-
-		Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(
-			Organization.class);
-
-		indexer.delete(organization);
+		return organization;
 	}
 
 	/**
@@ -437,22 +429,6 @@ public class OrganizationLocalServiceImpl
 		throws SystemException {
 
 		return groupPersistence.getOrganizations(groupId);
-	}
-
-	/**
-	 * Returns the organization with the primary key.
-	 *
-	 * @param  organizationId the primary key of the organization
-	 * @return the organization with the primary key
-	 * @throws PortalException if an organization with the primary key could not
-	 *         be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	@Override
-	public Organization getOrganization(long organizationId)
-		throws PortalException, SystemException {
-
-		return organizationPersistence.findByPrimaryKey(organizationId);
 	}
 
 	/**
@@ -1784,8 +1760,8 @@ public class OrganizationLocalServiceImpl
 				"Invalid organization type " + type);
 		}
 
-		if ((parentOrganizationId ==
-				OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID)) {
+		if (parentOrganizationId ==
+				OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID) {
 
 			if (!OrganizationImpl.isRootable(type)) {
 				throw new OrganizationParentException(
@@ -1841,7 +1817,7 @@ public class OrganizationLocalServiceImpl
 				companyId, name);
 
 			if ((organization != null) &&
-				(organization.getName().equalsIgnoreCase(name))) {
+				organization.getName().equalsIgnoreCase(name)) {
 
 				if ((organizationId <= 0) ||
 					(organization.getOrganizationId() != organizationId)) {

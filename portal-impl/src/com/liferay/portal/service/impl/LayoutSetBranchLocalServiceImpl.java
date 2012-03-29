@@ -91,8 +91,20 @@ public class LayoutSetBranchLocalServiceImpl
 			settings = copyLayoutSetBranch.getSettings();
 		}
 		else {
-			LayoutSet layoutSet = layoutSetLocalService.getLayoutSet(
-				groupId, privateLayout);
+			LayoutSet layoutSet = null;
+
+			if (master) {
+
+				// Do not go through LayoutSetLocalServiceStagingAdvice when
+				// creating the master branch
+
+				layoutSet = layoutSetPersistence.findByG_P(
+					groupId, privateLayout);
+			}
+			else {
+				layoutSet = layoutSetLocalService.getLayoutSet(
+					groupId, privateLayout);
+			}
 
 			logo = layoutSet.getLogo();
 			logoId = layoutSet.getLogoId();
@@ -249,13 +261,14 @@ public class LayoutSetBranchLocalServiceImpl
 	}
 
 	@Override
-	public void deleteLayoutSetBranch(LayoutSetBranch layoutSetBranch)
+	public LayoutSetBranch deleteLayoutSetBranch(
+			LayoutSetBranch layoutSetBranch)
 		throws PortalException, SystemException {
 
-		deleteLayoutSetBranch(layoutSetBranch, false);
+		return deleteLayoutSetBranch(layoutSetBranch, false);
 	}
 
-	public void deleteLayoutSetBranch(
+	public LayoutSetBranch deleteLayoutSetBranch(
 			LayoutSetBranch layoutSetBranch, boolean includeMaster)
 		throws PortalException, SystemException {
 
@@ -283,16 +296,18 @@ public class LayoutSetBranchLocalServiceImpl
 
 		layoutRevisionLocalService.deleteLayoutSetBranchLayoutRevisions(
 			layoutSetBranch.getLayoutSetBranchId());
+
+		return layoutSetBranch;
 	}
 
 	@Override
-	public void deleteLayoutSetBranch(long layoutSetBranchId)
+	public LayoutSetBranch deleteLayoutSetBranch(long layoutSetBranchId)
 		throws PortalException, SystemException {
 
 		LayoutSetBranch layoutSetBranch =
 			layoutSetBranchPersistence.findByPrimaryKey(layoutSetBranchId);
 
-		deleteLayoutSetBranch(layoutSetBranch);
+		return deleteLayoutSetBranch(layoutSetBranch, false);
 	}
 
 	public void deleteLayoutSetBranches(long groupId, boolean privateLayout)
@@ -357,7 +372,11 @@ public class LayoutSetBranchLocalServiceImpl
 			User user = userPersistence.findByPrimaryKey(userId);
 
 			if (layoutSetId <= 0) {
-				LayoutSet layoutSet = layoutSetLocalService.getLayoutSet(
+
+				// Do not go throug hLayoutSetLocalServiceStagingAdvice since
+				// all we need is the layout set ID
+
+				LayoutSet layoutSet = layoutSetPersistence.findByG_P(
 					groupId, privateLayout);
 
 				layoutSetId = layoutSet.getLayoutSetId();

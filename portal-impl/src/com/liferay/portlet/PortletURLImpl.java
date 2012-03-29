@@ -270,6 +270,10 @@ public class PortletURLImpl
 		return _portletRequest;
 	}
 
+	public Set<String> getRemovedParameterNames() {
+		return _removedParameterNames;
+	}
+
 	public Map<String, String> getReservedParameterMap() {
 		if (_reservedParameters != null) {
 			return _reservedParameters;
@@ -607,6 +611,12 @@ public class PortletURLImpl
 
 	public void setRefererPlid(long refererPlid) {
 		_refererPlid = refererPlid;
+
+		clearCache();
+	}
+
+	public void setRemovedParameterNames(Set<String> removedParameterNames) {
+		_removedParameterNames = removedParameterNames;
 
 		clearCache();
 	}
@@ -1010,7 +1020,7 @@ public class PortletURLImpl
 				sb.append(StringPool.EQUAL);
 				sb.append(processValue(key, values[i]));
 
-				if ((i + 1 < values.length) || itr.hasNext()) {
+				if (((i + 1) < values.length) || itr.hasNext()) {
 					sb.append(StringPool.AMPERSAND);
 				}
 			}
@@ -1022,9 +1032,9 @@ public class PortletURLImpl
 
 		if (PropsValues.PORTLET_URL_ANCHOR_ENABLE) {
 			if (_anchor && (_windowState != null) &&
-				(!_windowState.equals(WindowState.MAXIMIZED)) &&
-				(!_windowState.equals(LiferayWindowState.EXCLUSIVE)) &&
-				(!_windowState.equals(LiferayWindowState.POP_UP))) {
+				!_windowState.equals(WindowState.MAXIMIZED) &&
+				!_windowState.equals(LiferayWindowState.EXCLUSIVE) &&
+				!_windowState.equals(LiferayWindowState.POP_UP)) {
 
 				String lastString = sb.stringAt(sb.index() - 1);
 
@@ -1130,9 +1140,9 @@ public class PortletURLImpl
 
 		if (PropsValues.PORTLET_URL_ANCHOR_ENABLE) {
 			if (_anchor && (_windowState != null) &&
-				(!_windowState.equals(WindowState.MAXIMIZED)) &&
-				(!_windowState.equals(LiferayWindowState.EXCLUSIVE)) &&
-				(!_windowState.equals(LiferayWindowState.POP_UP))) {
+				!_windowState.equals(WindowState.MAXIMIZED) &&
+				!_windowState.equals(LiferayWindowState.EXCLUSIVE) &&
+				!_windowState.equals(LiferayWindowState.POP_UP)) {
 
 				sb.append("wsrp-fragmentID");
 				sb.append(StringPool.EQUAL);
@@ -1175,7 +1185,7 @@ public class PortletURLImpl
 				parameterSb.append(StringPool.EQUAL);
 				parameterSb.append(HttpUtil.encodeURL(values[i]));
 
-				if ((i + 1 < values.length) || itr.hasNext()) {
+				if (((i + 1) < values.length) || itr.hasNext()) {
 					parameterSb.append(StringPool.AMPERSAND);
 				}
 			}
@@ -1229,7 +1239,7 @@ public class PortletURLImpl
 
 	protected boolean isBlankValue(String[] value) {
 		if ((value != null) && (value.length == 1) &&
-			(value[0].equals(StringPool.BLANK))) {
+			value[0].equals(StringPool.BLANK)) {
 
 			return true;
 		}
@@ -1246,16 +1256,18 @@ public class PortletURLImpl
 		Map<String, String[]> renderParameters = RenderParametersPool.get(
 			_request, layout.getPlid(), getPortlet().getPortletId());
 
-		Iterator<Map.Entry<String, String[]>> itr =
-			renderParameters.entrySet().iterator();
-
-		while (itr.hasNext()) {
-			Map.Entry<String, String[]> entry = itr.next();
-
+		for (Map.Entry<String, String[]> entry : renderParameters.entrySet()) {
 			String name = entry.getKey();
 
 			if (name.indexOf(namespace) != -1) {
 				name = name.substring(namespace.length());
+			}
+
+			if (!_lifecycle.equals(PortletRequest.RESOURCE_PHASE) &&
+				(_removedParameterNames != null) &&
+				_removedParameterNames.contains(name)) {
+
+				continue;
 			}
 
 			String[] oldValues = entry.getValue();
@@ -1343,7 +1355,7 @@ public class PortletURLImpl
 					sb.append(StringPool.EQUAL);
 					sb.append(newURL);
 
-					if (i < params.length - 1) {
+					if (i < (params.length - 1)) {
 						sb.append(StringPool.AMPERSAND);
 					}
 				}
@@ -1351,7 +1363,7 @@ public class PortletURLImpl
 			else {
 				sb.append(param);
 
-				if (i < params.length - 1) {
+				if (i < (params.length - 1)) {
 					sb.append(StringPool.AMPERSAND);
 				}
 			}
@@ -1385,6 +1397,7 @@ public class PortletURLImpl
 	private PortletMode _portletMode;
 	private PortletRequest _portletRequest;
 	private long _refererPlid;
+	private Set<String> _removedParameterNames;
 	private Map<String, String[]> _removePublicRenderParameters;
 	private HttpServletRequest _request;
 	private Map<String, String> _reservedParameters;
