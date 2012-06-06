@@ -22,6 +22,7 @@ import com.liferay.portal.model.LayoutTypePortlet;
 import com.liferay.portal.model.MembershipRequest;
 import com.liferay.portal.model.PortletPreferencesIds;
 import com.liferay.portal.model.Team;
+import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.MembershipRequestLocalServiceUtil;
 import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.service.TeamLocalServiceUtil;
@@ -128,9 +129,14 @@ public class ActionUtil
 
 		String cmd = ParamUtil.getString(request, Constants.CMD);
 
+		long groupId = ParamUtil.getLong(request, "groupId");
+
 		Group group = null;
 
-		if (!cmd.equals(Constants.ADD)) {
+		if (groupId > 0) {
+			group = GroupLocalServiceUtil.getGroup(groupId);
+		}
+		else if (!cmd.equals(Constants.ADD)) {
 			group = themeDisplay.getScopeGroup();
 		}
 
